@@ -1,11 +1,12 @@
 #include "window.h"
 
 int main() {
-   TerminalWindow termwindow;
+   TerminalWindow termWindow;
+   WindowBuffers windowBuffers;
 
-   termwindow.initTermWindow();
+   termWindow.initTermWindow(windowBuffers.winBuf, termWindow.winVal);
 
-   termwindow.init();
+   termWindow.termLoop();
 
    return 0;
 }
