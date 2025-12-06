@@ -2,60 +2,66 @@
 
 /* Set up the glfw window */
 
-int TerminalWindow::initTermWindow(s_WindowBuf &winBuf, s_WindowValues &winVal) {
-
-  if (!glfwInit()) {
-    std::cerr << "Failed to initialize GLFW\n";
-    return -1;
-  }
-
-  GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3));
-  GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3));
-  GLCall(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE));
-
+// create and set glfwWindow and make it current context
+GLFWwindow* TerminalWindow::createTermWindow(s_WindowBuf &winBuf, s_WindowValues &winVal) {
    WindowBuffers windowBuffers;
 
-  windowBuffers.createGlfwWindow(winBuf, winVal);
+   windowBuffers.createGlfwWindow(winBuf, winVal);
 
-  // update
-  this->glfwWindow = winBuf.buf.back();
+   // update glfwwindow to the one we just created
+   this->glfwWindow = winBuf.buf.back();
 
-  GLCall(glfwMakeContextCurrent(glfwWindow));
+   GLCall(glfwMakeContextCurrent(glfwWindow));
 
-  return 0;
+   return glfwWindow;
 }
 
-int TerminalWindow::termLoop() {
-  while (!glfwWindowShouldClose(glfwWindow)) {
+int TerminalWindow::termLoop(s_WindowBuf &winBuf, s_WindowValues &winVal) {
+    GLFWwindow* firstWindow = createTermWindow(winBuf, winVal);
+    winBuf.count += 1;
 
-    GLCall(glClearColor(0.0f, 0.4f, 0.6f, 1.0f));
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    // Pointer to current window for rendering
+    GLFWwindow* currentWindow = firstWindow;
 
-    glfwSwapBuffers(glfwWindow);
-    glfwPollEvents();
-  }
+    while (!glfwWindowShouldClose(currentWindow)) {
 
-  glfwTerminate();
+        // Clear the current context with first color
+        glfwMakeContextCurrent(currentWindow);
+        GLCall(glClearColor(1.0f, 0.4f, 0.6f, 1.0f));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        glfwSwapBuffers(currentWindow);
 
-  return 0;
+        // Switch back to the last window
+        currentWindow = winBuf.buf.back();
+
+        glfwPollEvents();
+
+        if (glfwGetKey(currentWindow, GLFW_KEY_SPACE) == GLFW_PRESS) {
+           GLFWwindow* _ = createTermWindow(winBuf, winVal); // don't need return value
+           winBuf.count++;
+        }
+    }
+
+    glfwTerminate();
+    return 0;
 }
 
 // create another gtk window and update window buffer
 void WindowBuffers::createGlfwWindow(s_WindowBuf &winBuf,
-                                     s_WindowValues &winVal) {
+      s_WindowValues &winVal) {
 
-  GLFWwindow *window = glfwCreateWindow(winVal.Width, winVal.Height,
-                                        winVal.Title, nullptr, nullptr);
+   GLFWwindow *window = glfwCreateWindow(winVal.Width, winVal.Height,
+         winVal.Title, nullptr, nullptr);
 
-  if (!window) {
-     std::cerr << "glfwWindow failed to initialize: LINE: " << __LINE__
-        << " FILE: " << __FILE__ << std::endl;
-     glfwTerminate();
-  }
+   if (!window) {
+      std::cerr << "glfwWindow failed to initialize: LINE: " << __LINE__
+         << " FILE: " << __FILE__ << std::endl;
+      glfwTerminate();
+   }
 
-  winBuf.buf.push_back(window);
+   winBuf.buf.push_back(window);
 
-  glfwMakeContextCurrent(window);
+   glfwMakeContextCurrent(window);
 }
 
 // int Window::createWindow() {

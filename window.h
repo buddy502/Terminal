@@ -9,7 +9,8 @@
 #include <string>
 #include <vector>
 
-#define MAX_WIN_BUF 10
+#include <thread>
+#include <chrono>
 
 struct s_WindowValues {
    int Width = 800;
@@ -25,13 +26,11 @@ struct s_WindowValues {
 // create a buffer of windows
 // NOTE: Allocate size
 struct s_WindowBuf {
-   int capacity;
    int count;
    std::vector<GLFWwindow*> buf;
    s_WindowBuf() :
-         capacity(MAX_WIN_BUF),
          count(0),
-         buf(std::vector<GLFWwindow*>(MAX_WIN_BUF)){}
+         buf(){}
 };
 
 
@@ -43,9 +42,9 @@ class TerminalWindow {
       TerminalWindow() {}
 
       // initialize glfw window
-      int initTermWindow(s_WindowBuf &winBuf, s_WindowValues &winVal);
+      GLFWwindow* createTermWindow(s_WindowBuf &winBuf, s_WindowValues &winVal);
       // the main initializer function in main for now
-      int termLoop();
+      int termLoop(s_WindowBuf &winBuf, s_WindowValues &winVal);
 };
 
 // public incase of need for s_WindowValues
