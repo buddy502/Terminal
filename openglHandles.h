@@ -27,7 +27,8 @@ inline bool GLLogCall(const char* function, const char* file, int line) {
 
 // NOTE: !(x) makes sure the NOT has higher precedence
 // when used in certain conditions
+
 #define ASSERT(x) if (!(x)) __builtin_trap();
 #define GLCall(func) GLClearError();\
    func;\
-   ASSERT(GLLogCall(#func, __FILE__, __LINE__));\
+   ASSERT(GLLogCall(#func, __FILE__, __LINE__));

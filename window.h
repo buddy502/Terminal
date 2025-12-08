@@ -29,8 +29,7 @@ struct s_WindowBuf {
    int count;
    std::vector<GLFWwindow*> buf;
    s_WindowBuf() :
-         count(0),
-         buf(){}
+         count(0), buf(){}
 };
 
 
@@ -39,7 +38,7 @@ class TerminalWindow {
       GLFWwindow* glfwWindow = nullptr;
       s_WindowValues winVal;
 
-      TerminalWindow() {}
+      TerminalWindow() = default;
 
       // initialize glfw window
       GLFWwindow* createTermWindow(s_WindowBuf &winBuf, s_WindowValues &winVal);
@@ -51,7 +50,7 @@ class TerminalWindow {
 class WindowBuffers : public TerminalWindow {
    public:
       s_WindowBuf winBuf;
-      WindowBuffers() : winBuf() {}
+      WindowBuffers() = default;
 
       void createGlfwWindow(s_WindowBuf &winBuf, s_WindowValues& winVal);
 };
