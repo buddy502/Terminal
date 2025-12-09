@@ -20,8 +20,6 @@ int TerminalWindow::termLoop(s_WindowBuf &winBuf, s_WindowValues &winVal) {
     GLFWwindow* firstWindow = createTermWindow(winBuf, winVal);
     winBuf.count += 1;
 
-    std::cout << winBuf.buf.size() << std::endl;
-
     while (!glfwWindowShouldClose(firstWindow)) {
 
         // Clear the current context with first color

@@ -1,4 +1,5 @@
 #include "window.h"
+#include "history.h"
 
 int main() {
    if (!glfwInit()) {
@@ -12,6 +13,10 @@ int main() {
 
    TerminalWindow termWindow;
    WindowBuffers windowBuffers;
+
+   HistoryChannel historyChannel;
+
+   historyChannel.addHistoryBlock(historyChannel.historyBlock);
 
    termWindow.termLoop(windowBuffers.winBuf, termWindow.winVal);
 
