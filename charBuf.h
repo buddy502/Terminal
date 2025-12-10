@@ -2,40 +2,77 @@
 
 #include <array>
 #include <stdio.h>
+#include <map>
 
 #include "openglHandles.h"
-#include "types.h"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #define MAX_STR_BUFFER 20
 
-// keep track of current line begin & end
-struct s_MemLine {
-   int begin;
-   int end;
+struct s_FTLib {
+   FT_Library ft;
+   FT_Face face;
 };
 
-// NOTE every line that you enter goes into historyBlock
+struct s_Character {
+   unsigned int TextureID;  // ID handle of the glyph texture
+   glm::ivec2   Size;       // Size of glyph
+   glm::ivec2   Bearing;    // Offset from baseline to left/top of glyph
+   unsigned int Advance;    // Offset to advance to next glyph
+};
+
+// keep track of current line begin & end
 struct s_Line {
+   int begin;  // start of current array
+   int end;    // end of current array
+};
+// NOTE every line that you enter goes into historyBlock
+struct s_MemLine {
    int count;
    int capacity;
    std::array<uint, MAX_STR_BUFFER> strbuf;
 };
-
 struct s_Cursor {
-   Vec3<float> Color;
+   glm::vec3 Color;  // cursor color
+   uint position;    // position isn't negative
 };
 
+// the memory block class used for each array of strings
+//
+// allow the class to activate freetype since it's also
+// constructing the characters
 class MemBlock {
    private:
-      s_Line buf_t;
+      s_MemLine buf_t;
       s_Cursor cursor_t;
+      s_FTLib Ftlib_t;
    public:
+      MemBlock() {
+         if (FT_Init_FreeType(&Ftlib_t.ft))
+         {
+            std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+            throw std::runtime_error("Failed to initialize FreeType");
+         }
 
-      MemBlock() = default;
+         if (FT_New_Face(Ftlib_t.ft, "fonts/arial.ttf", 0, &Ftlib_t.face))
+         {
+            std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;  
+            throw std::runtime_error("Failed to initialize FreeType");
+         }
+      };
+      ~MemBlock() {
+         FT_Done_FreeType(Ftlib_t.ft);
+      }
 
+      std::map<char, s_Character> Characters;
+
+      void initCharTextures();
       void insertChar(s_Line buf_t);
 };
 
+// insert a single char into the buffer
 #define CHAR_INSERT(item, buf){                                \
    do {                                                        \
       if ((buf)->count >= (buf)->capacity) {                   \

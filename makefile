@@ -1,7 +1,7 @@
 CXX := g++
-CXXFLAGS := -std=c++23 -Wall -Wextra -g -O2
+CXXFLAGS := -std=c++23 -Wall -Wextra -g -O2 -I. -I/usr/include/freetype2 -MMD -MP
 
-LIBS := -lGLEW -lGL -lglfw -lGLU
+LIBS := -lGLEW -lGL -lglfw -lGLU -lfreetype
 
 TARGET := main
 BUILD_DIR := build
@@ -9,20 +9,16 @@ BUILD_DIR := build
 SELECT_SRC := main.cpp window.cpp
 SRCS := $(wildcard *.cpp)
 
-
 # get the pattern .cpp and replace it with .o and move it to build
 
-ifeq ($(MAKECMDGOALS), src)
-	SELECT_SRC := main.cpp window.cpp
-else
-	SELECT_SRC := $(SRCS)
-endif
+SELECT_SRC := $(SRCS)
+
+all: $(TARGET)	
+
+src: $(TARGET)
 
 OBJS := $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(SELECT_SRC))
 DEP := $(OBJS:.o=.d)
-
-all: $(TARGET)	
-src: $(TARGET)
 
 # build the target file with all obj file dependancies
 

@@ -1,5 +1,6 @@
 #include "window.h"
 #include "history.h"
+#include "charBuf.h"
 
 int main() {
    if (!glfwInit()) {
@@ -15,6 +16,8 @@ int main() {
    WindowBuffers windowBuffers;
 
    HistoryChannel historyChannel;
+
+   MemBlock memBlock;
 
    historyChannel.addHistoryBlock(historyChannel.historyBlock);
 

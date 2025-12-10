@@ -24,7 +24,7 @@ int TerminalWindow::termLoop(s_WindowBuf &winBuf, s_WindowValues &winVal) {
 
         // Clear the current context with first color
         glfwMakeContextCurrent(firstWindow);
-        GLCall(glClearColor(1.0f, 0.4f, 0.6f, 1.0f));
+        GLCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
         glfwSwapBuffers(firstWindow);
 

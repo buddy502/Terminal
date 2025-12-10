@@ -9,9 +9,6 @@
 #include <string>
 #include <vector>
 
-#include <thread>
-#include <chrono>
-
 struct s_WindowValues {
    int Width = 800;
    int Height = 640;

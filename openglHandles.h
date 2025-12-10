@@ -7,6 +7,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include <glm/glm.hpp>
+
 #include <fstream>
 #include <sstream>
 

@@ -8,9 +8,6 @@ void HistoryChannel::addHistoryBlock(s_historyBlock historyBlock) {
       perror("Error opening history block");
    }
 
-   historyBlock.str[0] = 'H';
-   historyBlock.str[1] = '\0';
-
    fputs(historyBlock.str.data(), historyPoint);
 
    fclose(historyPoint);
