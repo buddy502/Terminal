@@ -11,9 +11,17 @@
 
 #define MAX_STR_BUFFER 20
 
+///////////////////////
+///      SHADERS
+///////////////////////
 struct s_FTLib {
    FT_Library ft;
    FT_Face face;
+};
+
+struct s_ShaderBuf {
+   unsigned int VBO_f;
+   unsigned int VAO_f;
 };
 
 struct s_Character {
@@ -22,6 +30,10 @@ struct s_Character {
    glm::ivec2   Bearing;    // Offset from baseline to left/top of glyph
    unsigned int Advance;    // Offset to advance to next glyph
 };
+
+///////////////////////
+///////////////////////
+///////////////////////
 
 // keep track of current line begin & end
 struct s_Line {
@@ -47,28 +59,28 @@ class MemBlock {
    private:
       s_MemLine buf_t;
       s_Cursor cursor_t;
-
-      s_FTLib Ftlib_t;
    public:
       MemBlock() = default;
 
-      void init(const std::string& fontPath) {
-         if (FT_Init_FreeType(&Ftlib_t.ft)) {
-            throw std::runtime_error("ERROR::FREETYPE: Could not init FreeType Library");
-         }
+      void insertChar(s_Line buf_t);
+};
 
-         if (FT_New_Face(Ftlib_t.ft, fontPath.c_str(), 0, &Ftlib_t.face)) {
-            throw std::runtime_error("ERROR::FREETYPE: Failed to load font");
-         }
-      }
-      ~MemBlock() {
-         FT_Done_FreeType(Ftlib_t.ft);
-      }
+class FontManager {
+   public:
+      s_FTLib ftlib;
+      s_ShaderBuf shaderBuf;
 
       std::map<char, s_Character> Characters;
 
+      FontManager() = default;
+      ~FontManager();
+
+      void initFreetype(const std::string& fontPath);
       void initCharTextures();
-      void insertChar(s_Line buf_t);
+
+      void ShaderBuffers();
+      void RenderText(uint id, std::string text, float x, float y,
+            float scale, glm::vec3 color);
 };
 
 // insert a single char into the buffer

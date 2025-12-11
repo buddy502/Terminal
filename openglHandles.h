@@ -18,9 +18,9 @@ struct s_ShaderFile {
 };
 
 class GLHandles {
-   private:
    public:
       s_ShaderFile shaderFile;
+
       GLHandles() = default;
       ~GLHandles() = default;
 

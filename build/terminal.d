@@ -1,4 +1,4 @@
-build/main.o: main.cpp terminal.h openglHandles.h charBuf.h \
+build/terminal.o: terminal.cpp terminal.h openglHandles.h charBuf.h \
  /usr/include/freetype2/ft2build.h \
  /usr/include/freetype2/freetype/config/ftheader.h \
  /usr/include/freetype2/freetype/freetype.h \
@@ -13,7 +13,7 @@ build/main.o: main.cpp terminal.h openglHandles.h charBuf.h \
  /usr/include/freetype2/freetype/ftimage.h \
  /usr/include/freetype2/freetype/fterrors.h \
  /usr/include/freetype2/freetype/ftmoderr.h \
- /usr/include/freetype2/freetype/fterrdef.h history.h
+ /usr/include/freetype2/freetype/fterrdef.h
 terminal.h:
 openglHandles.h:
 charBuf.h:
@@ -32,4 +32,3 @@ charBuf.h:
 /usr/include/freetype2/freetype/fterrors.h:
 /usr/include/freetype2/freetype/ftmoderr.h:
 /usr/include/freetype2/freetype/fterrdef.h:
-history.h:
