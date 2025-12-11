@@ -12,6 +12,22 @@
 #include <fstream>
 #include <sstream>
 
+struct s_ShaderFile {
+   std::string vertexShader = "res/fontRenderVertex.shader";
+   std::string fragmentShader = "res/fontRenderFrag.shader";
+};
+
+class GLHandles {
+   private:
+   public:
+      s_ShaderFile shaderFile;
+      GLHandles() = default;
+      ~GLHandles() = default;
+
+      uint CompileShader(uint type, const std::string& shaderSource);
+      uint CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
+};
+
 // handle opengl errors
 inline void GLClearError() {
    while(glGetError() != GL_NO_ERROR);

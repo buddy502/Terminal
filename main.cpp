@@ -12,12 +12,16 @@ int main() {
    GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3));
    GLCall(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE));
 
+   GLHandles glHandles;
+
    TerminalWindow termWindow;
    WindowBuffers windowBuffers;
 
    HistoryChannel historyChannel;
 
    MemBlock memBlock;
+
+   memBlock.init("font/TimesNewRomanRegular/TimesNewRomanRegular.ttf");
 
    historyChannel.addHistoryBlock(historyChannel.historyBlock);
 

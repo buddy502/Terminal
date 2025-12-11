@@ -47,21 +47,20 @@ class MemBlock {
    private:
       s_MemLine buf_t;
       s_Cursor cursor_t;
+
       s_FTLib Ftlib_t;
    public:
-      MemBlock() {
-         if (FT_Init_FreeType(&Ftlib_t.ft))
-         {
-            std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-            throw std::runtime_error("Failed to initialize FreeType");
+      MemBlock() = default;
+
+      void init(const std::string& fontPath) {
+         if (FT_Init_FreeType(&Ftlib_t.ft)) {
+            throw std::runtime_error("ERROR::FREETYPE: Could not init FreeType Library");
          }
 
-         if (FT_New_Face(Ftlib_t.ft, "fonts/arial.ttf", 0, &Ftlib_t.face))
-         {
-            std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;  
-            throw std::runtime_error("Failed to initialize FreeType");
+         if (FT_New_Face(Ftlib_t.ft, fontPath.c_str(), 0, &Ftlib_t.face)) {
+            throw std::runtime_error("ERROR::FREETYPE: Failed to load font");
          }
-      };
+      }
       ~MemBlock() {
          FT_Done_FreeType(Ftlib_t.ft);
       }

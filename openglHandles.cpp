@@ -1,39 +1,7 @@
 #include "openglHandles.h"
 
-/* Use opengl shaders when creating glyphs */
-
-struct ShaderProgramSource {
-   std::string VertexSource;
-   std::string FragmentSource;
-};
-
-static struct ShaderProgramSource ParseShader(const std::string& filepath) {
-   enum class ShaderType {
-      NONE = -1, VERTEX = 0, FRAGMENT = 1
-   };
-
-   std::ifstream stream(filepath);
-   std::string line;
-   std::stringstream ss[2];
-   ShaderType type = ShaderType::NONE;
-
-   while (getline(stream, line)) {
-      if (line.find("#shader") != std::string::npos) {
-         if (line.find("vertex") != std::string::npos)
-            type = ShaderType::VERTEX;
-         else if (line.find("fragment") != std::string::npos)
-            type = ShaderType::FRAGMENT;
-      }
-      else {
-         ss[(int)type] << line << '\n';
-      }
-   }
-
-   return { ss[0].str(), ss[1].str() };
-}
-
-unsigned int CompileShader(unsigned int type, const std::string& shaderSource) {
-   unsigned int id = glCreateShader(type);
+uint GLHandles::CompileShader(uint type, const std::string& shaderSource) {
+   uint id = glCreateShader(type);
    const char* src = shaderSource.c_str();
    GLCall(glShaderSource(id, 1, &src, nullptr));
    GLCall(glCompileShader(id));
@@ -54,11 +22,11 @@ unsigned int CompileShader(unsigned int type, const std::string& shaderSource) {
    return id;
 }
 
-unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
-   GLCall(unsigned int program = glCreateProgram());
+uint GLHandles::CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
+   GLCall(uint program = glCreateProgram());
 
-   unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-   unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+   uint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+   uint fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
    GLCall(glAttachShader(program, vs));
    GLCall(glAttachShader(program, fs));
