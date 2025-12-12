@@ -32,6 +32,9 @@ struct s_WindowBuf {
 
 class WindowBuffers {
    public:
+      s_WindowValues winVal;
+      s_WindowBuf winBuf;
+
       WindowBuffers() = default;
       void createGlfwWindow(s_WindowBuf &winBuf, s_WindowValues& winVal);
 };
@@ -45,9 +48,6 @@ class TerminalWindow {
       WindowBuffers windowBuffers;
 
       GLFWwindow* glfwWindow = nullptr;
-
-      s_WindowValues winVal;
-      s_WindowBuf winBuf;
 
       TerminalWindow() = default;
 

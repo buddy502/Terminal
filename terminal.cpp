@@ -32,11 +32,28 @@ void WindowBuffers::createGlfwWindow(s_WindowBuf &winBuf,
    winBuf.buf.push_back(window);
 
    glfwMakeContextCurrent(window);
+
+   // needed to compile shaders
+   GLenum err;
+   glewExperimental = GL_TRUE;
+   if ((err = glewInit()) != GLEW_OK) {
+      std::cout << glewGetErrorString(err) << std::endl;
+      glfwTerminate();
+   }
 }
 
 void TerminalWindow::Init() {
-   fontID = glHandles.CreateShader(glHandles.shaderFile.vertexShader,
-         glHandles.shaderFile.fragmentShader);
+   s_ShaderFile source = ParseShaderFile("res/fontRender.shader");
+   fontID = glHandles.CreateShader(source.vertexShader, source.fragmentShader);
+
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glDisable(GL_CULL_FACE);
+
+   glUseProgram(fontID);
+
+   glm::mat4 projection = glm::ortho(0.0f, (float)windowBuffers.winVal.Width, 0.0f, (float)windowBuffers.winVal.Height);
+   glUniformMatrix4fv(glGetUniformLocation(fontID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
    fontManager.initFreetype("fonts/TimesNewRomanRegular/TimesNewRomanRegular.ttf");
    fontManager.initCharTextures();
@@ -52,24 +69,25 @@ void TerminalWindow::OnUpdate() {
 }
 
 int TerminalWindow::mainLoop() {
-   GLFWwindow* firstWindow = createTermWindow(winBuf, winVal);
-   winBuf.count += 1;
+   glfwWindow = createTermWindow(windowBuffers.winBuf,
+         windowBuffers.winVal);
+
+   windowBuffers.winBuf.count += 1;
 
    Init();
 
-   while (!glfwWindowShouldClose(firstWindow)) {
+   while (!glfwWindowShouldClose(glfwWindow)) {
 
-      glfwMakeContextCurrent(firstWindow);
-      firstWindow = winBuf.buf.back();
+      glfwWindow = windowBuffers.winBuf.buf.back();
 
-      GLCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
+      GLCall(glClearColor(0.2f, 0.5f, 0.6f, 1.0f));
       GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
       OnRender();
 
       glfwPollEvents();
 
-      glfwSwapBuffers(firstWindow);
+      glfwSwapBuffers(glfwWindow);
    }
 
    glfwTerminate();

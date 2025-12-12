@@ -1,6 +1,5 @@
 #include "terminal.h"
 #include "history.h"
-#include "charBuf.h"
 
 int main() {
    if (!glfwInit()) {
@@ -8,15 +7,16 @@ int main() {
       return -1;
    }
 
-   GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3));
-   GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3));
+   GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4));
+   GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1));
    GLCall(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE));
 
    TerminalWindow termWindow;
 
    HistoryChannel historyChannel;
 
-   historyChannel.addHistoryBlock(historyChannel.historyBlock);
+   // up/down arrow
+   //historyChannel.addHistoryBlock(historyChannel.historyBlock);
 
    termWindow.mainLoop();
 

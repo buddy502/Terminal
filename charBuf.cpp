@@ -76,8 +76,6 @@ void FontManager::ShaderBuffers() {
 void FontManager::RenderText(uint id, std::string text, float x, float y,
       float scale, glm::vec3 color) {
 
-   glUseProgram(id);
-
    glUniform3f(glGetUniformLocation(id, "textColor"), color.x, color.y, color.z);
    glActiveTexture(GL_TEXTURE0);
    glBindVertexArray(shaderBuf.VAO_f);
