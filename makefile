@@ -1,7 +1,7 @@
 CXX := g++
 CXXFLAGS := -std=c++23 -Wall -Wextra -g -O0 -I. -I/usr/include/freetype2 -MMD -MP
 
-LIBS := -lGLEW -lGL -lglfw -lGLU -lfreetype
+LIBS := -lGLEW -lGL -lglfw -lGLU -ldl -lfreetype
 
 TARGET := main
 BUILD_DIR := build

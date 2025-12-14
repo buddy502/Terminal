@@ -11,9 +11,9 @@ void FontManager::initFreetype(const std::string& fontPath) {
 }
 
 void FontManager::initCharTextures(){
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
    FT_Set_Pixel_Sizes(ftlib.face, 0, 48);
+
+   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
    for (uint c = 0; c < 128; c++)
    {
@@ -75,6 +75,8 @@ void FontManager::ShaderBuffers() {
 
 void FontManager::RenderText(uint id, std::string text, float x, float y,
       float scale, glm::vec3 color) {
+
+   glUseProgram(id);
 
    glUniform3f(glGetUniformLocation(id, "textColor"), color.x, color.y, color.z);
    glActiveTexture(GL_TEXTURE0);

@@ -50,13 +50,15 @@ void TerminalWindow::Init() {
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glDisable(GL_CULL_FACE);
 
-   glUseProgram(fontID);
-
    glm::mat4 projection = glm::ortho(0.0f, (float)windowBuffers.winVal.Width, 0.0f, (float)windowBuffers.winVal.Height);
+
+   glUseProgram(fontID);
    glUniformMatrix4fv(glGetUniformLocation(fontID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
    fontManager.initFreetype("fonts/TimesNewRomanRegular/TimesNewRomanRegular.ttf");
    fontManager.initCharTextures();
+
+   fontManager.ShaderBuffers();
 }
 
 void TerminalWindow::OnRender() {
