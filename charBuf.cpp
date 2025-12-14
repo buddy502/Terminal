@@ -124,3 +124,34 @@ FontManager::~FontManager() {
     if (ftlib.face) FT_Done_Face(ftlib.face);
     if (ftlib.ft)   FT_Done_FreeType(ftlib.ft);
 }
+
+void MemBlock::insertChar(s_MemLine *buf_t, char ch, s_Line line) {
+   insertBuffer(buf_t, &ch, line, 1);
+}
+
+// insert a char into the memline strbuf with a character
+void MemBlock::insertBuffer(s_MemLine *buf_t, char *buf, s_Line line, size_t buf_len) {
+   for (size_t i = 0; i < buf_len; i++) {
+      CHAR_INSERT(buf_t->buf, buf);
+   }
+   
+   memmove(&buf_t->buf->strbuf[buf_t->cursor->pos + buf_len],
+         &buf_t->buf->strbuf[buf_t->cursor->pos],
+         buf_t->buf->count - buf_t->cursor->pos);
+   memcpy(&buf_t->buf->strbuf[buf_t->cursor->pos], buf, buf_len);
+
+   buf_t->cursor->pos += buf_len;
+
+   updateBufferLines(buf_t);
+}
+
+// update the begin and end of the current array
+void MemBlock::updateBufferLines(s_MemLine *buf_t) {
+   buf_t->linearr->count = 0;
+
+   s_Line line;
+   line.begin = 0;
+
+   // find newline and give it to history
+
+}

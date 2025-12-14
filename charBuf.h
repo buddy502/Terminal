@@ -40,15 +40,29 @@ struct s_Line {
    int begin;  // start of current array
    int end;    // end of current array
 };
-// NOTE every line that you enter goes into historyBlock
-struct s_MemLine {
-   int count;
-   int capacity;
-   std::array<uint, MAX_STR_BUFFER> strbuf;
+
+struct s_LineArr {
+   s_Line line;
+   size_t count;
+   size_t capacity;
 };
+
 struct s_Cursor {
    glm::vec3 Color;  // cursor color
-   uint position;    // position isn't negative
+   uint pos;         // position isn't negative
+};
+
+struct s_StringBuf {
+   size_t count;
+   size_t capacity;
+   std::array<char*, MAX_STR_BUFFER> strbuf;
+};
+
+// NOTE every line that you enter goes into historyBlock
+struct s_MemLine {
+   s_Cursor *cursor;
+   s_LineArr *linearr;
+   s_StringBuf buf;
 };
 
 // the memory block class used for each array of strings
@@ -56,13 +70,12 @@ struct s_Cursor {
 // allow the class to activate freetype since it's also
 // constructing the characters
 class MemBlock {
-   private:
-      s_MemLine buf_t;
-      s_Cursor cursor_t;
    public:
       MemBlock() = default;
 
-      void insertChar(s_Line buf_t);
+      void insertChar(s_MemLine *buf_t, char ch, s_Line line);
+      void insertBuffer(s_MemLine *buf_t, char *buf, s_Line line, size_t bufLen);
+      void updateBufferLines(s_MemLine *buf_t);
 };
 
 class FontManager {
@@ -84,7 +97,7 @@ class FontManager {
 };
 
 // insert a single char into the buffer
-#define CHAR_INSERT(item, buf){                                \
+#define CHAR_INSERT(buf, item)                                 \
    do {                                                        \
       if ((buf)->count >= (buf)->capacity) {                   \
          (buf)->capacity =                                     \
@@ -94,5 +107,5 @@ class FontManager {
          ASSERT((buf)->strbuf != nullptr && "Reallocation failed");\
       }                                                        \
       (buf)->strbuf[(buf)->count++] = (item);                  \
-   } while(0)                                                  \
-}
+   } while(0)
+
