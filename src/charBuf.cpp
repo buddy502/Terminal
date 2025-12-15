@@ -132,7 +132,6 @@ void MemBlock::insertChar(s_MemLine *buf_t, char ch) {
 // insert a char into the memline strbuf with a character
 void MemBlock::insertBuffer(s_MemLine *buf_t, char *buf, size_t buf_len) {
 
-   // append \0 after each character
    for (size_t i = 0; i < buf_len; i++) {
       CHAR_INSERT(&buf_t->membuf, '\0');
    }
@@ -143,18 +142,19 @@ void MemBlock::insertBuffer(s_MemLine *buf_t, char *buf, size_t buf_len) {
 
    memcpy(&buf_t->membuf.strbuf[buf_t->cursor->pos], buf, buf_len);
 
+   buf_t->membuf.count++;
+
    buf_t->cursor->pos += buf_len;
 }
 
-// !IMPORTANT: call function when the '\n' key is pressed
 void MemBlock::updateBufferLine(s_MemLine *buf_t) {
    // lines don't matter because we work with 1
    // contiguous line of memory at a time
    HistoryChannel historyBlock;
 
-   // find newline and give it to history
-   // end current line with \0
-   CHAR_INSERT(&buf_t->membuf, '\0');
-   buf_t->membuf.strbuf = nullptr;  // remove the current string
+   // erase data by setting count to 0 then null terminator
+   buf_t->membuf.count = 0;
+   buf_t->membuf.strbuf[0] = '\0';
+
    historyBlock.addHistoryBlock(buf_t->membuf.strbuf);
 }

@@ -44,20 +44,27 @@ class TerminalWindow {
       FontManager fontManager;
       GLHandles glHandles;
 
-      s_MemLine *memline;
-      MemBlock memblock;
-      uint fontID = 0;
-   public:
       WindowBuffers windowBuffers;
 
       GLFWwindow* glfwWindow = nullptr;
 
+      s_MemLine *memline = nullptr;
+      MemBlock memblock;
+
+      uint fontID{};
+   public:
+
       TerminalWindow() = default;
+
+      ~TerminalWindow();
 
       // initialize glfw window
       GLFWwindow* createTermWindow(s_WindowBuf &winBuf, s_WindowValues &winVal);
 
       static void character_callback(GLFWwindow* window, unsigned int codepoint);
+
+      static void key_callback(GLFWwindow* window,
+         int key, int scancode, int action, int mods);
 
       void Init();
       void OnRender();  // handle text rendering

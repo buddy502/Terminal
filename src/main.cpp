@@ -1,5 +1,4 @@
 #include "terminal.h"
-#include "history.h"
 
 int main() {
    if (!glfwInit()) {
@@ -12,11 +11,6 @@ int main() {
    GLCall(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE));
 
    TerminalWindow termWindow;
-
-   HistoryChannel historyChannel;
-
-   // up/down arrow
-   //historyChannel.addHistoryBlock(historyChannel.historyBlock);
 
    termWindow.mainLoop();
 

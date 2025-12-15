@@ -1,4 +1,5 @@
 #include "terminal.h"
+#include "openglHandles.h"
 
 /* Set up the glfw window */
 
@@ -42,6 +43,36 @@ void WindowBuffers::createGlfwWindow(s_WindowBuf &winBuf,
    }
 }
 
+
+void TerminalWindow::key_callback(GLFWwindow* window,
+      int key, int scancode, int action, int mods) {
+
+   TerminalWindow* tw =
+      static_cast<TerminalWindow*>(glfwGetWindowUserPointer(window));
+
+   if (key == GLFW_KEY_ENTER || key == GLFW_KEY_KP_ENTER) {
+      tw->memblock.updateBufferLine(tw->memline);
+   }
+}
+
+void TerminalWindow::character_callback(GLFWwindow* window, unsigned int codepoint) {
+   TerminalWindow* tw =
+      static_cast<TerminalWindow*>(glfwGetWindowUserPointer(window));
+   if (!tw || !tw->memline) return;
+
+   tw->memblock.insertChar(tw->memline, (char)codepoint);
+}
+
+void TerminalWindow::OnRender() {
+   fontManager.RenderText(fontID, memline->membuf.strbuf, 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+}
+
+void TerminalWindow::OnUpdate() {
+   // insert character for every keypress
+   glfwSetCharCallback(glfwWindow, character_callback);
+   glfwSetKeyCallback(glfwWindow, key_callback);
+}
+
 void TerminalWindow::Init() {
    s_ShaderFile source = ParseShaderFile("res/fontRender.shader");
    fontID = glHandles.CreateShader(source.vertexShader, source.fragmentShader);
@@ -59,22 +90,9 @@ void TerminalWindow::Init() {
    fontManager.initCharTextures();
 
    fontManager.ShaderBuffers();
-}
 
-void TerminalWindow::character_callback(GLFWwindow* window, unsigned int codepoint) {
-   TerminalWindow* tw = static_cast<TerminalWindow*>(glfwGetWindowUserPointer(window));
-   tw->memblock.insertChar(tw->memline, (char)codepoint);
-}
-
-void TerminalWindow::OnRender() {
-   fontManager.RenderText(fontID, "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-   fontManager.RenderText(fontID, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-}
-
-void TerminalWindow::OnUpdate() {
-   // insert character for every keypress
-   glfwSetWindowUserPointer(glfwWindow, this);
-   glfwSetCharCallback(glfwWindow, character_callback);
+   memline = new s_MemLine();
+   memline->membuf.strbuf = static_cast<char*>(malloc(MAX_STR_BUFFER));
 }
 
 int TerminalWindow::mainLoop() {
@@ -103,4 +121,12 @@ int TerminalWindow::mainLoop() {
 
    glfwTerminate();
    return 0;
+}
+
+TerminalWindow::~TerminalWindow() {
+    if (memline) {
+        delete[] memline->membuf.strbuf;
+        delete memline;
+        memline = nullptr;
+    }
 }
