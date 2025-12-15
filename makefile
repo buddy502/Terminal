@@ -6,18 +6,13 @@ LIBS := -lGLEW -lGL -lglfw -lGLU -ldl -lfreetype
 TARGET := main
 BUILD_DIR := build
 
-SELECT_SRC := main.cpp window.cpp
-SRCS := $(wildcard *.cpp)
-
-# get the pattern .cpp and replace it with .o and move it to build
-
-SELECT_SRC := $(SRCS)
+SRCS := $(wildcard src/*.cpp)
 
 all: $(TARGET)	
 
 src: $(TARGET)
 
-OBJS := $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(SELECT_SRC))
+OBJS := $(patsubst src/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 DEP := $(OBJS:.o=.d)
 
 # build the target file with all obj file dependancies
@@ -28,7 +23,7 @@ $(TARGET) : $(OBJS)
 # all .o files in build_dir are rebuilt if a file
 # with the target name is changed
 # If a file in build_dir changed, don't rebuild
-$(BUILD_DIR)/%.o : %.cpp | $(BUILD_DIR)
+$(BUILD_DIR)/%.o : src/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # NOTE: $< = first-prerequisite, $@ = target

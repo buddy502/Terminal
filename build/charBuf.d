@@ -1,5 +1,5 @@
-build/charBuf.o: charBuf.cpp charBuf.h openglHandles.h \
- /usr/include/freetype2/ft2build.h \
+build/charBuf.o: src/charBuf.cpp src/charBuf.h src/openglHandles.h \
+ src/history.h /usr/include/freetype2/ft2build.h \
  /usr/include/freetype2/freetype/config/ftheader.h \
  /usr/include/freetype2/freetype/freetype.h \
  /usr/include/freetype2/freetype/config/ftconfig.h \
@@ -14,8 +14,9 @@ build/charBuf.o: charBuf.cpp charBuf.h openglHandles.h \
  /usr/include/freetype2/freetype/fterrors.h \
  /usr/include/freetype2/freetype/ftmoderr.h \
  /usr/include/freetype2/freetype/fterrdef.h
-charBuf.h:
-openglHandles.h:
+src/charBuf.h:
+src/openglHandles.h:
+src/history.h:
 /usr/include/freetype2/ft2build.h:
 /usr/include/freetype2/freetype/config/ftheader.h:
 /usr/include/freetype2/freetype/freetype.h:

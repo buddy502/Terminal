@@ -5,6 +5,7 @@
 #include <map>
 
 #include "openglHandles.h"
+#include "history.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -35,17 +36,25 @@ struct s_Character {
 ///////////////////////
 ///////////////////////
 
-// keep track of current line begin & end
-struct s_Line {
-   int begin;  // start of current array
-   int end;    // end of current array
-};
+/* 
+   We have a terminal filled with text that stays until the terminal
+   erases it.
+   Then we have a line of text that is forwarded to the history file
+   and also able to change.
+   The current line changes after every newline
+   
+   #  Body of terminal can be erased which removes all text shown
+   apollo@repo/: Hello, World! 
+   apollo@repo/: Hello, World!
+   apollo@repo/: Hello, World!   # can change the current line
 
-struct s_LineArr {
-   s_Line line;
-   size_t count;
-   size_t capacity;
-};
+*/
+
+/* 
+   Mark a string with \0 and end current array   
+   membuf = {"Hello\0"}
+   membuf = {"World\0"}
+*/
 
 struct s_Cursor {
    glm::vec3 Color;  // cursor color
@@ -55,14 +64,13 @@ struct s_Cursor {
 struct s_StringBuf {
    size_t count;
    size_t capacity;
-   std::array<char*, MAX_STR_BUFFER> strbuf;
+   char* strbuf;
 };
 
 // NOTE every line that you enter goes into historyBlock
 struct s_MemLine {
    s_Cursor *cursor;
-   s_LineArr *linearr;
-   s_StringBuf buf;
+   s_StringBuf membuf;
 };
 
 // the memory block class used for each array of strings
@@ -73,9 +81,9 @@ class MemBlock {
    public:
       MemBlock() = default;
 
-      void insertChar(s_MemLine *buf_t, char ch, s_Line line);
-      void insertBuffer(s_MemLine *buf_t, char *buf, s_Line line, size_t bufLen);
-      void updateBufferLines(s_MemLine *buf_t);
+      void insertChar(s_MemLine *buf_t, char ch);
+      void insertBuffer(s_MemLine *buf_t, char *buf, size_t bufLen);
+      void updateBufferLine(s_MemLine *buf_t);
 };
 
 class FontManager {
@@ -102,9 +110,8 @@ class FontManager {
       if ((buf)->count >= (buf)->capacity) {                   \
          (buf)->capacity =                                     \
             (buf)->capacity == 0 ? MAX_STR_BUFFER : (buf)->capacity * 2;\
-         (buf)->strbuf =                                       \
-            reallocarray((buf->strbuf), 2 * (buf)->capacity, sizeof(char*));\
-         ASSERT((buf)->strbuf != nullptr && "Reallocation failed");\
+         (buf)->strbuf = static_cast<char*>(                   \
+            reallocarray((buf)->strbuf, (buf)->capacity, sizeof(*(buf)->strbuf)));\
       }                                                        \
       (buf)->strbuf[(buf)->count++] = (item);                  \
    } while(0)

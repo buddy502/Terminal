@@ -1,2 +1,2 @@
-build/history.o: history.cpp history.h
-history.h:
+build/history.o: src/history.cpp src/history.h
+src/history.h:

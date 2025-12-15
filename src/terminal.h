@@ -43,6 +43,9 @@ class TerminalWindow {
    private:
       FontManager fontManager;
       GLHandles glHandles;
+
+      s_MemLine *memline;
+      MemBlock memblock;
       uint fontID = 0;
    public:
       WindowBuffers windowBuffers;
@@ -53,6 +56,8 @@ class TerminalWindow {
 
       // initialize glfw window
       GLFWwindow* createTermWindow(s_WindowBuf &winBuf, s_WindowValues &winVal);
+
+      static void character_callback(GLFWwindow* window, unsigned int codepoint);
 
       void Init();
       void OnRender();  // handle text rendering

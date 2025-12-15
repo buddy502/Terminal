@@ -61,13 +61,20 @@ void TerminalWindow::Init() {
    fontManager.ShaderBuffers();
 }
 
+void TerminalWindow::character_callback(GLFWwindow* window, unsigned int codepoint) {
+   TerminalWindow* tw = static_cast<TerminalWindow*>(glfwGetWindowUserPointer(window));
+   tw->memblock.insertChar(tw->memline, (char)codepoint);
+}
+
 void TerminalWindow::OnRender() {
    fontManager.RenderText(fontID, "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
    fontManager.RenderText(fontID, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 }
 
 void TerminalWindow::OnUpdate() {
-
+   // insert character for every keypress
+   glfwSetWindowUserPointer(glfwWindow, this);
+   glfwSetCharCallback(glfwWindow, character_callback);
 }
 
 int TerminalWindow::mainLoop() {
@@ -88,6 +95,8 @@ int TerminalWindow::mainLoop() {
       OnRender();
 
       glfwPollEvents();
+
+      OnUpdate();
 
       glfwSwapBuffers(glfwWindow);
    }

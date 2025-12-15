@@ -125,33 +125,36 @@ FontManager::~FontManager() {
     if (ftlib.ft)   FT_Done_FreeType(ftlib.ft);
 }
 
-void MemBlock::insertChar(s_MemLine *buf_t, char ch, s_Line line) {
-   insertBuffer(buf_t, &ch, line, 1);
+void MemBlock::insertChar(s_MemLine *buf_t, char ch) {
+   insertBuffer(buf_t, &ch, 1);
 }
 
 // insert a char into the memline strbuf with a character
-void MemBlock::insertBuffer(s_MemLine *buf_t, char *buf, s_Line line, size_t buf_len) {
+void MemBlock::insertBuffer(s_MemLine *buf_t, char *buf, size_t buf_len) {
+
+   // append \0 after each character
    for (size_t i = 0; i < buf_len; i++) {
-      CHAR_INSERT(buf_t->buf, buf);
+      CHAR_INSERT(&buf_t->membuf, '\0');
    }
    
-   memmove(&buf_t->buf->strbuf[buf_t->cursor->pos + buf_len],
-         &buf_t->buf->strbuf[buf_t->cursor->pos],
-         buf_t->buf->count - buf_t->cursor->pos);
-   memcpy(&buf_t->buf->strbuf[buf_t->cursor->pos], buf, buf_len);
+   memmove(&buf_t->membuf.strbuf[buf_t->cursor->pos + buf_len],
+         &buf_t->membuf.strbuf[buf_t->cursor->pos],
+         buf_t->membuf.count - buf_t->cursor->pos);
+
+   memcpy(&buf_t->membuf.strbuf[buf_t->cursor->pos], buf, buf_len);
 
    buf_t->cursor->pos += buf_len;
-
-   updateBufferLines(buf_t);
 }
 
-// update the begin and end of the current array
-void MemBlock::updateBufferLines(s_MemLine *buf_t) {
-   buf_t->linearr->count = 0;
-
-   s_Line line;
-   line.begin = 0;
+// !IMPORTANT: call function when the '\n' key is pressed
+void MemBlock::updateBufferLine(s_MemLine *buf_t) {
+   // lines don't matter because we work with 1
+   // contiguous line of memory at a time
+   HistoryChannel historyBlock;
 
    // find newline and give it to history
-
+   // end current line with \0
+   CHAR_INSERT(&buf_t->membuf, '\0');
+   buf_t->membuf.strbuf = nullptr;  // remove the current string
+   historyBlock.addHistoryBlock(buf_t->membuf.strbuf);
 }

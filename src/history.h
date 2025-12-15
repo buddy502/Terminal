@@ -11,7 +11,6 @@
 // write to a file to store memory blocks
 struct s_historyBlock {
    std::string fileName = "history_block";
-   std::array<char, MAX_HISTORY_BLOCK> str; 
 };
 
 class HistoryChannel {
@@ -20,6 +19,6 @@ class HistoryChannel {
 
       HistoryChannel() = default;
 
-      void addHistoryBlock(s_historyBlock historyBlock);
+      void addHistoryBlock(char* filestr);
       void readFromHistoryFile();
 };

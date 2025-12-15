@@ -22,7 +22,8 @@ uint GLHandles::CompileShader(uint type, const std::string& shaderSource) {
    return id;
 }
 
-uint GLHandles::CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
+uint GLHandles::CreateShader(const std::string& vertexShader,
+      const std::string& fragmentShader) {
    GLCall(GLuint program = glCreateProgram());
 
    uint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);

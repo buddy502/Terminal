@@ -14,6 +14,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "charBuf.h"
+
 struct s_ShaderFile {
    std::string vertexShader;
    std::string fragmentShader;
