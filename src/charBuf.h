@@ -49,7 +49,6 @@ struct s_Character {
    apollo@repo/: Hello, World!   # can change the current line
 
 */
-
 /* 
    Mark a string with \0 and end current array   
    membuf = {"Hello\0"}
@@ -58,19 +57,13 @@ struct s_Character {
 
 struct s_Cursor {
    glm::vec3 Color;  // cursor color
-   uint pos;         // position isn't negative
-};
-
-struct s_StringBuf {
-   size_t count;
-   size_t capacity;
-   char* strbuf;
+   uint pos;
 };
 
 // NOTE every line that you enter goes into historyBlock
 struct s_MemLine {
-   s_Cursor *cursor;
-   s_StringBuf membuf;
+   s_Cursor *cursor = nullptr;
+   std::string strbuf;
 };
 
 // the memory block class used for each array of strings

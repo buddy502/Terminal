@@ -1,14 +1,14 @@
 #include "history.h"
 
 // adds the 
-void HistoryChannel::addHistoryBlock(char* filestr) {
+void HistoryChannel::addHistoryBlock(std::string filestr) {
    FILE* historyPoint = fopen(historyBlock.fileName.c_str(), "a");
 
    if (!historyPoint) {
       perror("Error opening history block");
    }
 
-   fputs(filestr, historyPoint);
+   fputs(filestr.c_str(), historyPoint);
    fputc('\n', historyPoint);
 
    fclose(historyPoint);

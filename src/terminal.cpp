@@ -58,13 +58,15 @@ void TerminalWindow::key_callback(GLFWwindow* window,
 void TerminalWindow::character_callback(GLFWwindow* window, unsigned int codepoint) {
    TerminalWindow* tw =
       static_cast<TerminalWindow*>(glfwGetWindowUserPointer(window));
+
    if (!tw || !tw->memline) return;
 
    tw->memblock.insertChar(tw->memline, (char)codepoint);
+   std::cout << tw->memline << std::endl;
 }
 
 void TerminalWindow::OnRender() {
-   fontManager.RenderText(fontID, memline->membuf.strbuf, 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+   fontManager.RenderText(fontID, memline->strbuf, 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 }
 
 void TerminalWindow::OnUpdate() {
@@ -92,7 +94,10 @@ void TerminalWindow::Init() {
    fontManager.ShaderBuffers();
 
    memline = new s_MemLine();
-   memline->membuf.strbuf = static_cast<char*>(malloc(MAX_STR_BUFFER));
+   memline->strbuf.reserve(MAX_STR_BUFFER);
+
+   memline->cursor = new s_Cursor();
+   memline->cursor->pos = 0;
 }
 
 int TerminalWindow::mainLoop() {
@@ -101,6 +106,7 @@ int TerminalWindow::mainLoop() {
 
    windowBuffers.winBuf.count += 1;
 
+   glfwSetWindowUserPointer(glfwWindow, this);
    Init();
 
    while (!glfwWindowShouldClose(glfwWindow)) {
@@ -124,9 +130,6 @@ int TerminalWindow::mainLoop() {
 }
 
 TerminalWindow::~TerminalWindow() {
-    if (memline) {
-        delete[] memline->membuf.strbuf;
-        delete memline;
-        memline = nullptr;
-    }
+   if (memline) delete memline;
+   if (memline->cursor) delete memline->cursor;
 }

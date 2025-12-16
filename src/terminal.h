@@ -27,7 +27,7 @@ struct s_WindowBuf {
    int count;
    std::vector<GLFWwindow*> buf;
    s_WindowBuf() :
-         count(0), buf(){}
+         count(0), buf(0, nullptr){}
 };
 
 class WindowBuffers {

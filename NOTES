@@ -1,0 +1,9 @@
+GLFW is written in C language, it doesn't know about C++ objects
+   - glfwSetWindowUserPointer(glfwWindow, this);
+   - makes the current object known by the c++ object you use
+   - TerminalWindow* tw = static_cast<TerminalWindow*>(glfwGetWindowUserPointer(window));
+   - get the object now know by glfw
+
+nullptr def:
+   In c++ a null pointer is used for good practice when defining
+   a pointer that is not initialized a value.

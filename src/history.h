@@ -19,6 +19,6 @@ class HistoryChannel {
 
       HistoryChannel() = default;
 
-      void addHistoryBlock(char* filestr);
+      void addHistoryBlock(std::string filestr);
       void readFromHistoryFile();
 };
